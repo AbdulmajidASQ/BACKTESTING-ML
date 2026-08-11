@@ -280,10 +280,23 @@ Tier 0 is done when all of these hold. Please report the actual numbers, not a p
 3. Every one of run #14's **186 stored closed-year picks** is present in the view.
 4. Row count is preserved through the join — no fan-out. `count(*)` equals the pool size exactly.
 5. Null rates by era, four buckets, reported for every delivered column.
-6. **Look-ahead audit:** count of rows where `Filing Date >= make_date(ry, 4, 1)`. This number is
-   the headline output of the whole delivery. If it is materially above zero, the existing
-   backtest has been using fundamentals that were not yet public, and that finding takes
-   precedence over every feature in this document.
+6. **Look-ahead audit:** count of rows where `Filing Date >= make_date(ry, 4, 1)`.
+
+   **This test has now been run — see [`AUDIT-2026-08-11-point-in-time-integrity.md`](AUDIT-2026-08-11-point-in-time-integrity.md).**
+   Result: 16 of 21 pool rows with a January–March fiscal year end (76.2%) were filed after the
+   rebalance date, against 4.6% for December year ends and 0.9% for April–November. Affected picks
+   underperformed the clean cohort, so the defect is real but is not inflating returns. Apply the
+   guard described in that document; the count is expected to be non-zero and concentrated in the
+   Jan–Mar cohort.
+
+   **Priority change:** that audit also proved the panel carries present-day company identity
+   backward through history — `apex_screening_master.company_name` for ticker `WBD` in performance
+   year 2008 reads "Warner Bros. Discovery Inc", a company created in 2022. **Item 2.3
+   (point-in-time sector and industry) is therefore promoted to rank alongside 2.2, and its scope
+   widens to cover `company_name`, `country` and `is_adr` as well — keyed on a stable company
+   identifier rather than the ticker string.** The dedup key, the Energy exclusion, the
+   14-industry exclusion and the ADR exclusion all resolve through fields that are currently
+   as-of-today rather than as-of-rebalance.
 
 ---
 
