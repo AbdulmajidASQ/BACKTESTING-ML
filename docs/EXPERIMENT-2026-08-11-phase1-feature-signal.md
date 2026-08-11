@@ -123,28 +123,82 @@ why the project's own guidance is to freeze one model rather than pick a winner 
 
 I am recording it as **unproven**, not as a discovery.
 
-## 5. The caveat that matters most
+## 5. What the size tilt actually does — and why the survivorship caveat is smaller than it looks
 
-**The one validated finding is the one most exposed to the accepted survivorship limitation.**
+My first reading of this result was that a size tilt means "prefer smaller companies", which would
+make it the finding most exposed to the survivorship limitation, since small companies are the ones
+that go bankrupt and vanish from the panel. **That reading was wrong, and the owner was right to
+push back on it.** Two measurements settle it.
 
-A size tilt says: prefer smaller companies. Smaller companies are also the ones that go bankrupt,
-get delisted and disappear — and those are precisely the rows the panel is missing
-([`AUDIT-2026-08-11-survivorship.md`](AUDIT-2026-08-11-survivorship.md): 96.9% of 1996's names
-survive into 2024–26; no pick in 193 ever lost more than 45.95%). A small-cap tilt measured on a
-universe with the failures deleted will look better than it is, and the bias operates in exactly
-the direction of the finding.
+### The market-cap floors are already doing the protecting
 
-This does not invalidate the result — the out-of-sample confirmation is real within the data we
-have — but it means **the size tilt is the single finding here that most needs re-testing on a
-point-in-time panel before it is deployed**. `gross_profit_to_asset_pct`, by contrast, is a
-quality measure and is far less exposed to that bias; its failure to validate is more likely to be
-genuine.
+The floors are unchanged in the widened pool — only `eps_forward_cagr` was relaxed. The tilt
+operates entirely inside them, and it does not reach downward:
+
+| era (floor) | rule | smallest pick | median pick |
+|---|---|---|---|
+| 1996–99 ($50m) | incumbent | $66m | $272m |
+| | size tilt | **$66m** | $208m |
+| 2000–09 ($250m) | incumbent | $210m | $992m |
+| | size tilt | **$210m** | $635m |
+| 2010–19 ($500m) | incumbent | $257m | $1,968m |
+| | size tilt | **$257m** | $1,204m |
+| 2020–25 ($1bn) | incumbent | $1,008m | $3,367m |
+| | size tilt | $927m | $2,224m |
+
+**The smallest holding is identical under both rules in three of four eras.** The tilt buys nothing
+smaller than the incumbent already buys. What it changes is the median — roughly $2.0bn to $1.2bn
+in the 2010s, $3.4bn to $2.2bn recently. A $2.2 billion company is a mid-cap, not a fragile
+micro-cap.
+
+### The edge comes from the top of the distribution, not the bottom
+
+Decomposing the tilt into its two possible mechanisms:
+
+| rule | train 1996–2010 | test 2011–2025 |
+|---|---|---|
+| incumbent | 64.52 | 71.88 |
+| full size tilt, `z(disc) − z(ln assets)` | 67.43 | 75.97 |
+| **drop the largest third, then rank by discount** | **67.08** | **75.42** |
+| buy only from the smallest third | 65.84 | **63.46** |
+
+**Dropping the largest third captures essentially the entire effect** — within 0.5 points of the
+full tilt in both halves. **Restricting to the smallest third destroys value**, coming in 8.4
+points *below* the incumbent out of sample.
+
+So the mechanism is "avoid the giants", not "chase the tiny". The economic reading is
+straightforward: a very large company trading at a deep DCF discount is usually cheap for a reason
+the market has correctly identified — the classic value trap. A mid-cap at the same discount is
+more often simply under-followed. And the very smallest names in the pool are a mixture of
+overlooked and genuinely distressed, which is why the bottom-third rule fails.
+
+### Consequence for the survivorship caveat
+
+**The finding is far more robust to survivorship than I first stated.** The rule is driven by
+*excluding* the largest candidates, and large companies do not disappear from databases — that end
+of the distribution is fully observed. The missing rows are concentrated at the small end, which
+this rule does not lean into and which the floors already exclude.
+
+A residual concern remains and should be recorded: companies in the $500m–$2bn band that failed are
+still absent from the panel, so the surviving mid-caps the rule favours are a flattered sample. But
+this is a materially weaker objection than the one I first raised, and it is common to every arm of
+the experiment rather than specific to this one.
+
+`gross_profit_to_asset_pct` is a quality measure and is likewise little exposed to the bias; its
+failure to validate is most likely genuine.
 
 ## 6. Conclusions and next steps
 
-1. **Adopt provisionally:** a size tilt on the widened pool, `z(disc) − z(ln total_assets)`.
-   +4.09 out of sample on 15 years, sign-consistent with the diagnostic. Flag it for re-test on a
-   rebuilt universe before live deployment.
+1. **Adopt:** drop the largest third of candidates by total assets each year, then rank by
+   discount exactly as now. **+2.56 in the fitting period and +3.54 out of sample**, capturing
+   essentially all of the z-score tilt's benefit with none of its complexity — no z-scores, no
+   weighting, no new parameters to fit, and one line in the generator. Keep every market-cap floor
+   unchanged; they are what keeps the rule off the fragile end of the universe.
+
+   Prefer this over the full `z(disc) − z(ln assets)` formulation. The z-score version scores
+   marginally higher (+2.91 / +4.09) but buys that half-point with a continuous weighting scheme
+   that has more ways to be wrong out of sample, and it obscures what is actually driving the
+   result.
 2. **Do not adopt:** gross profitability, Piotroski, accruals, Beneish, buyback yield, ROIC−WACC.
    Recorded as tested and not proven, so they are not re-run.
 3. **Proceed to Phase 2** — the pairwise learning-to-rank model — with the bar set at the
