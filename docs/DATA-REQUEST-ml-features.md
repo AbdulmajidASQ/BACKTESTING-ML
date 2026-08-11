@@ -203,11 +203,25 @@ Required, per `(company_id, rebalance_year)`:
 externally. If only a subset is recoverable, deliver the subset; the 90-day `eps_f1` delta and
 `analyst_count` alone would be worth having.
 
-### 2.2 Delisted companies and point-in-time status — blocking
+### 2.2 Delisted companies and point-in-time status — BLOCKING, AND NOW CONFIRMED FAILING
 
-No feature fixes a panel that is missing the dead. If `apex_screening_master` was assembled from
-today's company list and back-filled, every backtest figure in this project is inflated and no
-model should be trained.
+> **This test has been run and the panel failed it.** See
+> [`AUDIT-2026-08-11-survivorship.md`](AUDIT-2026-08-11-survivorship.md). 96.9% of the companies
+> present in performance year 1996 are still in the 2024–26 panel, flat at ~96% across every
+> vintage; only 5.5% of `public.companies` is marked inactive; and in 193 concentrated deep-value
+> picks across thirty years **no position ever lost more than 45.95%**. The panel is a
+> survivor-only universe.
+>
+> **This item now outranks everything else in this document.** The feature work in Tiers 0 and 1
+> is still worth doing and can proceed in parallel, but no model may be trained until the universe
+> is rebuilt. Tier 2.1 (estimate revisions) is demoted below this.
+>
+> Note also: `companies.universe_last_seen` is a single constant value across all 26,793 rows and
+> is useless for dating delistings. Earlier guidance in this document suggesting otherwise was
+> wrong. There is no usable delisting date anywhere in the current schema.
+
+No feature fixes a panel that is missing the dead. Every backtest figure in this project is
+inflated by an amount that cannot be measured from inside the panel.
 
 | column | type | definition |
 |---|---|---|
