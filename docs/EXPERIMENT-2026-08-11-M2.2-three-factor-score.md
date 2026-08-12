@@ -98,19 +98,75 @@ behave this way — but so does overfitting. The two are hard to separate on 30 
 discount nor gross profitability, so the leave-one-market-out test that vindicated the size rule
 cannot be run on this one. That is a gap worth closing — see recommendations.
 
+## 4b. The three checks — all pass
+
+Run after the initial write-up. The result survives, at a smaller magnitude.
+
+### Check 1 — does it survive without its best window?
+
+| period | years | incumbent | 3-factor | **edge** |
+|---|---|---|---|---|
+| all 30 years | 30 | 68.16 | 73.57 | **+5.42** |
+| **excluding 1996–2000** | 25 | 71.98 | 73.90 | **+1.92** |
+| last 20 years only | 20 | 68.26 | 71.39 | **+3.14** |
+
+The concern was justified: removing the best window cuts the edge by roughly two-thirds. But it
+**stays positive**, and on the last 20 years — the period the owner's standing guidance says to
+weight most — it is **+3.14**. Honest magnitude is **+2 to +3 points**, not +5.4.
+
+### Check 2 — is it *these* three factors, or would any three do? **PASS, decisively**
+
+Sixty random three-feature combinations drawn from the same table. Each random feature was
+sign-oriented by its own mean within-year rank correlation, computed on the same data — so the null
+receives exactly the advantage the tested rule does, and if anything is flattered.
+
+| 60 random triples | CAGR |
+|---|---|
+| mean | 59.16 |
+| 95th percentile | 67.51 |
+| **best of 60** | **69.22** |
+| **actual — disc + fwd + gpa** | **73.57** |
+
+**Zero of 60 beat it; p ≤ 0.017.** The best random triple barely clears the incumbent. The factor
+choice is not arbitrary.
+
+### Check 3 — true daily drawdown. **PASS, and better than expected**
+
+Built `bt.ml_pool_px` (M1.1b): 210,753 rows of daily adjusted-close paths for all 835 pool
+name-years, anchored to rel = 1.0 at the first trading day on or after 1 April, 252 trading days per
+name-year. Books forward-filled onto a common date spine before weighting — the step this project
+has got wrong twice.
+
+| rule | CAGR | **true daily max drawdown** | trough |
+|---|---|---|---|
+| incumbent | 68.66 | **−60.66%** | 2025-02-17 |
+| **size + 3-factor score** | **72.57** | **−56.69%** | 2020-03-18 |
+
+**Both objectives improve: +3.9 points of CAGR and 4.0 points of drawdown.** The daily CAGRs
+reconcile with the annual calculation (68.66 vs 68.16, 72.57 vs 72.40), confirming the rig.
+
+**Read the drawdown as a delta, not a level.** These are computed on the widened-pool
+reconstruction, not on the registered `btd_*` layer, so −60.66 is not comparable to run #14's
+registered −52.74. The like-for-like comparison between the two arms is what carries meaning.
+
 ## 5. Recommendation
 
-1. **Adopt provisionally the `size + 3-factor score` variant**, not the pure score. It compounds
-   1.2 points lower but wins 4 of 6 windows rather than 3, and consistency is the scarcer property
-   here. Expected improvement over the shipped strategy: **≈ +3.2 points**, not the +4.35 headline.
-2. **Do not ship on this evidence alone.** Required first:
-   - real daily drawdown on hypothetical books (M1.1b), per the standing protocol
-   - a re-run excluding 1996–2000 to confirm the result does not depend on one thin window
-   - a permutation test against random three-feature z-combinations drawn from the same table
-3. **Add `gross_profit_to_asset_pct` and a DCF discount to `bt.cand_stage`** so the cross-market
-   test becomes possible. This is the single most valuable addition for validating any future
-   selection rule, and it belongs in the data request.
-4. **Register the negative results** so they are not re-run: `disc` residualised on `fwd`, `fwd`
+1. **Adopt the `size + 3-factor score` variant**, not the pure score. It compounds 1.2 points lower
+   but wins 4 of 6 windows rather than 3, and consistency is the scarcer property. All three
+   pre-committed checks now pass.
+2. **Quote the effect as +2 to +3 CAGR points, with drawdown improving by ~4.** Not the +5.4
+   headline — that figure depends on the 1996–2000 window. The conservative number is what belongs
+   in any catalogue entry.
+3. **Remaining before live deployment:**
+   - register as a **new run**, never overwriting #14, so the two stay comparable
+   - rebuild on the corrected daily layer once M0 lands
+   - catalogue caveats must state the multi-year underperformance risk explicitly: the size leg
+     alone lost 12.45 points over 2001–2005
+4. **Add `gross_profit_to_asset_pct` and a DCF discount to `bt.cand_stage`** so the cross-market
+   test becomes possible. `cand_stage` currently carries neither, which is why the leave-one-market-out
+   test that vindicated the size rule cannot be run on this one. Single most valuable addition for
+   validating any future selection rule; belongs in the data request.
+5. **Register the negative results** so they are not re-run: `disc` residualised on `fwd`, `fwd`
    alone, `gpa` alone, and the `disc+fwd` pair all fail.
 
 ## 6. Where this leaves the CAGR programme
