@@ -130,3 +130,56 @@ Two situations where it might still be worth revisiting:
 Note also that `public.mizan_book_trend_bt` already joins these measures to backtest books with
 returns, which suggests this line was explored before. Worth asking whether an earlier conclusion
 exists before spending more on it.
+
+---
+
+## Follow-up: was it ever used in any run? Verified — no, but it was wired in
+
+Checked properly rather than assumed, at the owner's prompting.
+
+| check | result |
+|---|---|
+| Any of the 86 runs' `config` mentioning trend / tau / tier | **none** |
+| Any candidate-generating view referencing the trend tables | **none** (only `mizan_trend_score` itself) |
+| `rank_by` values across all 86 runs | `disc desc` (6), regime-dependent disc/fwd (2), `dcf_discount_percent desc` (#14), the #87 z-score, and 76 unset. **No run uses `trend_score`.** |
+
+**But the capability exists and is wired in.** `public.fn_mizan_world_pick_sql` left-joins
+`mizan_trend_score_mat` and contains:
+
+```sql
+when 'trend_score' then 'ts.score_equal'
+```
+
+That is a `CASE` mapping a **`rank_by` parameter** to a ranking column. So ranking by trend score is
+a supported option in the world-pick function that **nothing has ever selected**. Someone built the
+plumbing, made it selectable, and it was never adopted. `public.fn_mizan_refresh_trend` maintains
+the tables.
+
+## The prior analysis — and it confirms the conclusion, more strongly
+
+`public.mizan_book_trend_bt` holds **1,901 rows across 3 strategies, 1996–2024**, joining the trend
+tiers to realised book returns. Someone ran this study before. Its result:
+
+| tier | strategy 1 | strategy 2 | strategy 3 |
+|---|---|---|---|
+| **Strong** | **61.5** | **54.0** | **41.3** |
+| Improving | 89.7 | 64.0 | 47.4 |
+| **Flat** | 81.5 | **65.2** | **55.7** |
+| Deteriorating | 70.2 | 57.0 | 48.6 |
+
+*(mean return %, by operating-income trend tier)*
+
+**In all three strategies, "Strong" is the worst tier.** Flat is the best or near-best in all three.
+The most consistently-improving companies **underperform** inside these screened books, every time.
+
+That is a stronger result than my own, which found Strong / Improving / Flat merely
+indistinguishable on run #87's pool. Two independent samples — three other strategies over 1,901
+name-years, and run #87's 777 candidates — point the same way: **within a screen that already
+demands rising earnings, more past consistency does not help and may hurt.**
+
+A plausible reading: the most reliably-improving companies are the ones the market has already
+recognised and extrapolated, so at any given discount level they are the *less* mispriced ones. The
+screen's own EPS gates capture the useful part of the signal; what remains is crowding.
+
+**Verdict unchanged and now double-confirmed. Do not use it as a ranking factor or a screen.** If
+anyone proposes `rank_by = 'trend_score'` in the world-pick function, this is the evidence against.
