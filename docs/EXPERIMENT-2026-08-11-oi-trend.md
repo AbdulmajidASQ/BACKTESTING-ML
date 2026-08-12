@@ -183,3 +183,44 @@ screen's own EPS gates capture the useful part of the signal; what remains is cr
 
 **Verdict unchanged and now double-confirmed. Do not use it as a ranking factor or a screen.** If
 anyone proposes `rank_by = 'trend_score'` in the world-pick function, this is the evidence against.
+
+---
+
+## Both directions tested — the answer is no, definitively
+
+The prior analysis showed **"Strong" is the worst tier in all three strategies**, which raises an
+obvious question my first tests did not ask: does the signal work **inverted**? If consistently
+improving companies underperform, then *preferring* inconsistent ones should help.
+
+Tested. It does not.
+
+| rule | CAGR | vs base |
+|---|---|---|
+| **base #87 — no trend term at all** | **74.19** | — |
+| minus `oi_tau`, quarter weight | 72.42 | −1.77 |
+| minus `oi_tau`, full weight | 71.15 | −3.04 |
+| minus `oi_tau`, half weight | 69.35 | −4.84 |
+| prefer Flat tier | 64.45 | −9.74 |
+| exclude Strong tier | 64.29 | −9.90 |
+| *(from the earlier test)* plus `oi_tau`, half weight | 69.36 | −4.83 |
+| *(from the earlier test)* plus `oi_tau`, full weight | 63.92 | −10.27 |
+
+**Every variant loses.** Positive weight, negative weight, tier exclusion, tier preference, at every
+weight from a quarter to full. Eight forms tested across both directions and not one improves on
+simply leaving it out.
+
+### Why inverting doesn't rescue it
+
+The tier differences are real but small against the noise — 51.7 / 52.0 / 52.7 / 43.1 on our pool —
+while the *cost* of including the term is structural and immediate.
+
+**The ranking slots are scarce.** Seven positions from roughly 28 candidates. Every unit of weight
+given to a weak signal is taken directly from a strong one. Even at a **quarter weight** the term
+costs 1.77 points, because that quarter comes out of factors scoring +0.147 to +0.181 to fund one
+scoring +0.075.
+
+A candidate factor does not need to be merely *positive* to earn a slot. It needs to be roughly as
+strong as the three already there. `oi_tau` is less than half as strong, so it dilutes whichever
+direction you point it in.
+
+**Final verdict: no. It does not improve CAGR in any form.** Closed.
