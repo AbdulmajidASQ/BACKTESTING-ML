@@ -19,11 +19,29 @@ Verified this session, closed window 1996-04-01 → 2026-04-01, 30 years:
 | Sharpe, rf = 0 | 2.09 |
 | Live 2026, restated to the Apr-1 basis | +102.66% as of 2026-08-10 |
 
-**Two standing constraints that bound everything below.** Growth-optimal exposure `e* = μ/σ²` is
-**5.22** for this book, so no reduction in exposure can raise CAGR — that is arithmetic, not an
-empirical result. And volatility predicts *drawdown* at Fisher p = 6.7 × 10⁻⁹ but predicts
-*returns* at p = 0.41. Together these say: **return has to come from selection, and drawdown has to
-come from convexity.** Those are two different workstreams and they are laid out separately.
+### The mandate, and what it rules out
+
+**Owner constraint, 2026-08-11: the book is 100% invested in equities at all times. No options of
+any kind — not bought, not written. No cash allocation, no de-risking, no timing.**
+
+That is a hard boundary and it closes three of the four instruments a portfolio normally uses
+against drawdown:
+
+| instrument | status |
+|---|---|
+| Reduce exposure / hold cash | **Excluded by mandate.** Also arithmetically self-defeating: `e* = μ/σ²` is **5.22** for this book, so any reduction below 100% costs compound growth |
+| Time the market | **Closed by evidence.** ~130 states tested across 25 markets and 559 market-years; volatility predicts drawdown at p = 6.7 × 10⁻⁹ but returns at p = 0.41 |
+| Buy convexity (long calls) | **Excluded by mandate**, though it was the only intervention in this project's record that improved return *and* drawdown at once |
+| **Portfolio construction and selection** | **The only levers left** |
+
+**The consequence has to be stated plainly: without convexity, return and drawdown are in direct
+tension.** Concentration is what produces the return, and concentration is what produces the
+drawdown. Diversifying cuts both. There is no free lunch left on the sizing side.
+
+**One lever escapes the trade-off: selection quality.** Picking companies that are both cheaper and
+more durable raises return *and* avoids disasters. That is why the selection workstream (M2)
+carries most of the programme's weight, and why the drawdown workstream (M3) is now a
+portfolio-construction exercise rather than a hedging one.
 
 **Accepted limitation.** The universe is survivor-only (96.9% of 1996 names still present; no
 holding in 193 ever lost more than 45.95%). Accepted by owner decision, recorded as run event 6.
@@ -58,7 +76,7 @@ Every failure in this project's history violated one of these. They are not nego
 | **M0** | Close open defects — trustworthy baseline | — | small | me |
 | **M1** | Research rig — one backtester, one validator, one registry | — | medium | me |
 | **M2** | Selection alpha — the return half | M1 | large | me |
-| **M3** | Convexity — the drawdown half | M1, M0 | large | me |
+| **M3** | Portfolio construction — the drawdown half, 100% invested | M1, M0 | large | me |
 | **M4** | Data foundation — point-in-time rebuild | — | large | data expert |
 | **M5** | Ship, register, monitor | M2 or M3 | medium | me |
 
@@ -95,6 +113,7 @@ after it gets faster and more trustworthy.
 | # | Task | Detail |
 |---|---|---|
 | M1.1 | Canonical backtest function | Input: pool definition, ranking expression, `top_n` rule, weighting. Output: annual returns, CAGR, MDD, vol, Sharpe, Sortino, per-year book. One implementation, used by every experiment. |
+| **M1.1b** | **Daily paths for hypothetical books — critical path** | Today the daily layer exists only for books that were actually registered, so **no candidate rule's drawdown can be measured**. Annual-path drawdown is not a substitute: it reads −7.27% for run #14 against a true −52.74%, because the real damage occurred inside a single year (2020-02-20 → 2020-03-18). Build daily constituent paths for any hypothetical book from `public.historical_daily_prices` via `company_id`, forward-filled onto a common spine. **Under a 100%-invested mandate this is the single most important piece of infrastructure in the programme** — without it, drawdown is unmeasurable and half the objective is unfalsifiable. |
 | M1.2 | Correct-by-construction statistics | CAGR from actual dates; `ppy` derived per run; exposure scales the **arithmetic** return; forward-fill onto a common spine before any weighted sum. Each of these has produced a wrong published number here before. |
 | M1.3 | Multi-split validator | Rolling-origin: expanding-window fits with 5+ distinct test periods, not one 15/15 cut. Report the distribution of the edge, not a point estimate. |
 | M1.4 | Permutation harness | For any episode- or regime-based claim, re-place episodes at random N times; report percentile and p-value. Project standard. |
@@ -183,65 +202,82 @@ as success, and be prepared for zero.
 
 ---
 
-## M3 — Convexity (the drawdown half)
+## M3 — Portfolio construction (the drawdown half, 100% invested)
 
-**This has had none of my attention so far and it is half of the original question.**
+**Scope changed 2026-08-11.** This milestone previously covered the option sleeve. That is
+withdrawn under the no-options mandate. Everything below keeps the book **100% invested in
+equities at all times** and attacks drawdown purely through *how the book is built*.
 
-Exposure switching is closed: `e*` exceeds 1 in all 25 markets, median 4.82; 92 rules across 6
-signal families raised median CAGR in exactly zero of them. The lever is **buying convexity**,
-which is permitted where writing is not — and the call sleeve is the only intervention in the
-entire findings record that improved return *and* drawdown simultaneously:
+**Set expectations honestly.** A fully-invested, concentrated equity book will absorb most of a
+market crash. The benchmark fell roughly a third peak-to-trough in Feb–Mar 2020; this book fell
+52.74%. Nothing in this milestone changes that structurally. Realistic ambition is **a few points
+of drawdown, and most of it bought with return** — except where selection quality improves both.
+Anyone expecting −52% to become −25% without hedging or de-risking is expecting arithmetic to bend.
 
-| run, 2008–2026 | CAGR | MDD |
-|---|---|---|
-| #14 stock only | 79.76 | −52.74 |
-| **#76 — 85% stocks + 15% one-year 30%-OTM calls** | **107.36** | **−50.49** |
+### M3.0 — Prerequisite: make drawdown measurable (M1.1b)
 
-### M3.1 — Drawdown taxonomy *(do this first — it decides the whole track)*
+Nothing in M3 can start until daily paths can be built for hypothetical books. This is now the
+gating dependency for half the programme.
+
+### M3.1 — Drawdown taxonomy *(first — it scopes everything after)*
 
 | # | Task |
 |---|---|
 | M3.1.1 | Enumerate every drawdown >20% on the daily series: peak, trough, depth, **duration**, recovery time |
-| M3.1.2 | Classify fast-crash vs slow-bear. The maximum is a 27-day COVID event; if most are fast, convexity and the crash-onset airbag fit the problem. If most are slow bears, neither works and we are building the wrong instrument |
-| M3.1.3 | Attribute: how much of each drawdown is market beta vs the book's own concentration |
+| M3.1.2 | Classify fast-crash vs slow-bear. The maximum is a 27-day COVID event |
+| M3.1.3 | **Attribution — the key question.** Decompose each drawdown into market beta, sector concentration, and single-name blow-ups. Only the last two are addressable under this mandate; if the drawdowns are overwhelmingly market beta, M3's realistic ceiling is small and we should say so and redirect effort into M2 |
 
-**This is a day's work and it determines M3.2 through M3.4.** Do not skip it.
+### M3.2 — Position count
 
-### M3.2 — Volatility forecasting
-
-The one signal proven to exist. Forecast next-year realised volatility and drawdown per market-year.
+`top_n = 7` (5 in RECOVERY) is a choice, never tested against alternatives.
 
 | # | Task |
 |---|---|
-| M3.2.1 | Panel model on 25 markets × 559 market-years — *not* the 18 US observations that sank the half-Kelly attempt |
-| M3.2.2 | Features: trailing realised vol at multiple horizons, index vol, breadth, dispersion, drawdown state |
-| M3.2.3 | Validate leave-one-market-out |
-| M3.2.4 | Target both realised vol and realised max drawdown; the second is what we actually care about |
+| M3.2.1 | Sweep n from 5 to 20 on the widened pool, reporting **CAGR and daily MDD jointly** |
+| M3.2.2 | Map the efficient frontier — how many CAGR points does each point of drawdown cost? |
+| M3.2.3 | Test whether the answer differs by regime; RECOVERY currently runs *more* concentrated (5), which is the opposite of what risk control would suggest |
+| M3.2.4 | Idiosyncratic vs systematic decomposition — diversification only helps the former, and there is a point past which added names buy nothing |
 
-### M3.3 — Sleeve sizing
+### M3.3 — Weighting
 
-| # | Task |
-|---|---|
-| M3.3.1 | Map the forecast to a sleeve weight through a **fixed, pre-committed rule** — learn the forecast, never the weight |
-| M3.3.2 | Baseline to beat is the fixed 25/50 regime rule at 185.7, which beat both flat-20 (153.6) and learned half-Kelly (147.7) |
-| M3.3.3 | Test raising the RECOVERY weight — 15N/50R turned 100.4%/yr at −23.3% MDD into 118.9% at the *same* −23.3%. Caveat: n = 5 recovery years, annual-path MDD not daily |
-| M3.3.4 | Re-verify the sleeve on the corrected 2026 basis, since the live year has just been restated |
-| M3.3.5 | Never write options. Never a short leg. Buy-only convexity |
-
-### M3.4 — The interaction, which is where "exceed" lives
-
-**A call sleeve is convex in the underlying's return, so improvements in selection are amplified,
-not merely added.** #77 at 20% calls turned an underlying 79.76 into 117.23 — the sleeve multiplied
-the book's return rather than adding to it. If M2 raises the underlying book by 5–10 points, the
-sleeve should convert that into materially more at the portfolio level.
+Equal weight is also a choice, and a weighting change keeps the book fully invested by construction.
 
 | # | Task |
 |---|---|
-| M3.4.1 | Re-run the whole sleeve family on the improved selection rule, not on the incumbent book |
-| M3.4.2 | Measure whether the optimal sleeve weight changes when the underlying is better |
-| M3.4.3 | Joint optimisation of selection rule × sleeve weight, with the small-n discipline preserved |
+| M3.3.1 | Inverse-volatility weighting — same 100% exposure, lower portfolio variance |
+| M3.3.2 | Rank-based weighting — more into higher-conviction names. Likely raises both return and drawdown; measure the trade |
+| M3.3.3 | Volatility-capped weights — cap any single name's *risk* contribution rather than its dollar weight |
+| M3.3.4 | Constraint: weights must sum to 1.0 with no cash residual. Any scheme leaving a residual is out of mandate and would also trip `v_btd_weight_audit` |
 
-**This is the single highest-upside item in the programme, and it is currently unexamined.**
+### M3.4 — Sector and correlation constraints
+
+**The most promising item in M3.** The live 2026 book is **7 of 7 Technology** — SNDK, MU, STX, WDC,
+CRDO, AMD, MRVL, essentially one bet on memory and semiconductors. That is a concentration risk the
+strategy never explicitly chose.
+
+| # | Task |
+|---|---|
+| M3.4.1 | Measure historical sector concentration by year — how often has the book been effectively a single sector? |
+| M3.4.2 | Test a cap of max 2, 3 or 4 names per sector, filling from the next-ranked candidate. Fully invested throughout |
+| M3.4.3 | Measure the cost in CAGR and the gain in drawdown; this is the cleanest frontier trade in the programme |
+| M3.4.4 | Test a pairwise-correlation cap as an alternative to sector labels, which are a crude proxy for what we actually mean |
+| M3.4.5 | Check interaction with M2's size rule — dropping the largest third may *increase* sector concentration, and the two rules must be tested jointly, not separately |
+
+### M3.5 — Fragility screening
+
+Reduce drawdown through *what is bought* rather than how much. This overlaps M2 and is the one
+place where both objectives move together.
+
+| # | Task |
+|---|---|
+| M3.5.1 | Re-test the quality features against **drawdown** rather than return. Altman Z, Piotroski and Beneish all failed as *return* predictors — they are distress measures and were being graded on the wrong outcome |
+| M3.5.2 | Tighten leverage gates and measure the drawdown/return trade explicitly |
+| M3.5.3 | Beta and realised-volatility screens at selection — available in the feature table already |
+| M3.5.4 | Test a maximum-drawdown-history screen: do names that previously fell hardest keep doing so? |
+
+**M3.5.1 is important and cheap.** Those three features were rejected this session for failing to
+predict returns. Under the new mandate the question is whether they predict *disasters*, which is
+what they were designed for. Re-grading them costs one experiment.
 
 ---
 
@@ -292,8 +328,8 @@ Per-result, not once at the end. For each adopted change:
 | G1 | Does the size rule survive multi-split, permutation and LOMO? | Do not ship; Phase 2's bar reverts to the incumbent |
 | G2 | Does any fixed formula beat the incumbent robustly? | Question whether a fitted model will do better — it usually won't |
 | G3 | Does the learned ranker beat the best fixed formula out of sample? | Do not ship the model. A negative here is a real result |
-| G4 | Are the drawdowns fast crashes? | Convexity and the airbag are the wrong instruments; re-scope M3 |
-| G5 | Does the sleeve still pay on the improved book? | Keep selection gains, drop the sleeve changes |
+| G4 | Are the drawdowns driven by sector concentration and single-name blow-ups, or by market beta? | If overwhelmingly beta, M3's ceiling is small under a 100%-invested mandate. Say so, cap the effort, redirect into M2 |
+| G5 | Does any construction change cut drawdown at an acceptable cost in CAGR? | Accept the current risk profile as the price of concentration, and state it plainly in the catalogue |
 
 ---
 
@@ -312,21 +348,27 @@ Per-result, not once at the end. For each adopted change:
 
 ## What "exceed" looks like
 
-Reaching the goal is a better book. Exceeding it comes from three compounding effects:
+Under a 100%-invested, no-options mandate the upside is narrower and comes from three places:
 
-1. **The sleeve multiplies selection gains** rather than adding to them (M3.4). This is the largest
-   unexamined opportunity in the programme.
-2. **Whatever works on the US pool can be tested across 25 markets.** The infrastructure exists —
-   `lp2_cand`, `lp2_sel`, 83 registered runs. A selection rule that replicates cross-market is worth
-   far more than one that works in one country, and LOMO validation gives it for free.
-3. **Estimate revisions (M4.3) are closer to the alpha source than anything currently used.** Every
-   signal in the book today is a derivative of forward EPS estimates. Modelling the *revisions*
-   rather than the level is the one genuinely new axis available.
+1. **Selection quality is the only lever that improves both objectives at once.** Everything else
+   in M3 is a frontier trade — pay return, get drawdown. A better-chosen book is cheaper *and*
+   more durable. This is why M2 carries most of the programme's weight and why M3.5 (re-grading the
+   quality features against drawdown instead of return) is disproportionately valuable for its cost.
+2. **Sector concentration is an unpriced risk the strategy never chose.** The live book is 7 of 7
+   Technology. If the drawdown attribution at M3.1.3 shows concentration is a material contributor,
+   a sector cap is the cheapest real drawdown reduction available — and it costs less return than
+   simply holding more names.
+3. **Whatever works on the US pool can be tested across 25 markets.** The infrastructure exists —
+   `lp2_cand`, `lp2_sel`, 83 registered runs. A rule that replicates cross-market is worth far more
+   than one that works in one country, and leave-one-market-out validation gives it for free.
+   Estimate revisions (M4.3) are the one genuinely new signal axis available, since every signal in
+   the book today is a derivative of forward EPS estimates.
 
-**Honest expectation.** Selection: +5 to +10 CAGR points, with wide error bars. Drawdown: the sleeve
-family already demonstrates −2 points of MDD alongside +28 of CAGR at a 15% weight; better vol
-forecasting should improve the trade rather than transform it. The compounding of the two is where
-the upside sits, and it is the part nobody has measured.
+**Honest expectation.** Selection: +5 to +10 CAGR points, with wide error bars. Drawdown: a few
+points from construction, most of it paid for in return, with the exception of whatever fragility
+screening delivers. **−52.74% is not going to become −25% without hedging or de-risking, and no
+amount of modelling will change that.** The realistic outcome is a book that earns more per unit of
+the same risk, not one that carries materially less risk.
 
 Anyone promising more than that from this data is selling the walk-forward result that already came
 in four points behind the incumbent.
