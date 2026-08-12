@@ -128,3 +128,46 @@ producing `UNDER_POPULATED` weight-audit exceptions. Removed.
 2. Re-measure when the point-in-time universe is rebuilt (M4). The survivorship limitation applies
    to both runs equally, so the *difference* should survive; the levels will not.
 3. The bar for the learning-to-rank model (M2.4) is now **72.57**, not the incumbent.
+
+---
+
+## Companion run #86 — the simplified variant
+
+Registered 2026-08-11 alongside #85 at owner request, so both remain comparable.
+
+**`United States (US) · Conc-7 · 3-Factor Score (widened pool, no size screen, $5B era 2026+)`**
+
+Identical universe, identical widened pool, identical three-factor score. The one difference:
+**the size screen is removed.** Candidates are ranked purely on the score.
+
+| metric | #14 | #85 (with size screen) | **#86 (no size screen)** |
+|---|---|---|---|
+| CAGR, 30 closed years | 69.22 | 72.57 | **73.77** |
+| Hit rate | 81.2% | 85.4% | 85.4% |
+| Worst year | −7.61 | −7.15 | −7.15 |
+| Max drawdown (daily) | −52.74\* | −56.69 | −56.69 |
+| Live 2026 to date | 102.66 | 72.55 | 72.00 |
+| NAV reconciliation | — | 30/30 | **30/30, worst 0.022%** |
+| Weight-audit exceptions | 0 | 0 | **0** |
+
+\* #14's drawdown is measured on a different spine (~364 rows/year with weekend interpolation)
+and is not directly comparable to the trading-day spines of #85 and #86.
+
+**Why #86 is the recommended form.** Removing the size screen scores +1.20 CAGR points over 30
+closed years, +0.63 excluding 1996–2000, +0.31 over the last 20 years and −0.54 in the live year.
+Every closed-year window marginally favours removal and all four differences sit inside noise — so
+the case is **parsimony**, not performance. One fewer rule, one fewer parameter, one fewer way to
+overfit. The size effect remains independently validated, but the score already captures most of
+it, since both the discount and gross-profitability legs tilt smaller on their own.
+
+**Registration completeness for #86:** `runs` · 31 `run_years` · 192 `picks` · 192 `btd_books` ·
+47,302 `btd_rel` · 7,637 `btd_daily` · catalogue with 7 caveats (draft, not subscribable) ·
+2 events. NAV reconciliation 30/30 at worst gap 0.022%, weight audit clean.
+
+### Infrastructure defect found and fixed during the #86 build
+
+`bt.btd_rel` held **1,237,147 rows with no indexes at all**, so every query filtering on `run_id`
+was a full table scan and the `btd_daily` build timed out repeatedly. Added
+`btd_rel_run_ry_dt_idx (run_id, ry, dt)` and `btd_books_run_ry_idx (run_id, ry)`, then analyzed —
+the insert that had been failing completed immediately. **This affects all 59 runs with a daily
+layer**, and is a plausible reason earlier daily rebuilds in this project were done by hand.
