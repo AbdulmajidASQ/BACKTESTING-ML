@@ -101,3 +101,49 @@ presence overall, 17% for 2010s deaths. Training is on hold per the lab rule. Th
 fixed formula rather than a fitted model, so it is not caught by that hold, but every level here
 remains optimistic by an unquantified amount. Only the differences between arms are meaningful, and
 they are all measured on the same pool.
+
+---
+
+## Registered as run #87
+
+Built 2026-08-11, fully populated to the checklist, all audit gates passing.
+
+**`United States (US) · Conc-7 · 3-Factor Score, growth-orthogonalised discount`**
+
+### The family, side by side
+
+| | #14 | #85 | #86 | **#87** |
+|---|---|---|---|---|
+| ranking | `disc` | `disc+fwd+gpa`, size screen | `disc+fwd+gpa` | **`disc_resid+fwd+gpa`** |
+| CAGR, 30 closed years | 69.22 | 72.57 | 73.77 | **74.19** |
+| Hit rate | 81.2% | 85.4% | 85.4% | **86.5%** |
+| Worst year | −7.61 | −7.15 | −7.15 | −7.15 |
+| Annualised volatility | 33.11\* | 32.13 | 32.39 | **31.91** |
+| Max drawdown | −52.74\* | −56.69 | −56.69 | −56.69 |
+| **Live 2026 to date** | 102.66 | 72.55 | 72.00 | **79.53** |
+| NAV reconciliation | — | 30/30 | 30/30 | **30/30, worst 0.022%** |
+| Weight exceptions | 0 | 0 | 0 | **0** |
+
+\* #14 is measured on a ~364-row spine with weekend interpolation and is not directly comparable
+to the trading-day spines of #85–#87.
+
+**#87 is the best of the family on every internal measure**: highest CAGR, highest hit rate,
+**lowest volatility**, and the best live-year figure of the three new runs. Higher return at lower
+volatility is the outcome you want from removing a redundancy rather than adding a bet.
+
+It remains behind #14 in the live year (79.53 vs 102.66), for reasons recorded in run #86 event
+seq 3 and unchanged here: the score ranks MU, AMD and MRVL below the cut and they have been the
+strongest names of 2026 so far.
+
+### Registration completeness
+
+`runs` with reproducible config · 31 `run_years` · 192 `picks` · 192 `btd_books` · 47,302
+`btd_rel` · 7,637 `btd_daily` · catalogue with 7 caveats (draft, not subscribable) · 3 events.
+NAV reconciliation 30/30 at worst gap 0.022%, weight audit clean, `run_options` N/A.
+
+### Build note worth keeping
+
+The `btd_daily` insert timed out repeatedly until `ANALYZE bt.btd_rel` was re-run after the
+47,302-row insert. Stale planner statistics, not a query defect. **Anyone rebuilding a daily layer
+should ANALYZE `bt.btd_rel` afterwards** — combined with the missing indexes found during the #86
+build, this is very likely why daily rebuilds in this project were historically done by hand.
