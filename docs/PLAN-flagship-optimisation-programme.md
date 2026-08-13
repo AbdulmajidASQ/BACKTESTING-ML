@@ -173,13 +173,34 @@ to beat *that*, and it usually cannot justify its complexity.
 The gates currently do two jobs: enforce economics *and* control book size. Those should be
 separated and each measured.
 
-| # | Task |
-|---|---|
-| M2.3.1 | Gate-by-gate marginal value — for each gate, measure the return contribution of the names it excludes |
-| M2.3.2 | `fwd` threshold sweep — 25 → 15 → 10 → 5 → 0, measuring pool width and ranking edge at each |
-| M2.3.3 | Revisit the EMA gate — it removes 43 of 423 candidates in NORMAL years; is it paying? |
-| M2.3.4 | Revisit the 14 industry exclusions — the largest single cut in the funnel (55,490 from 99,754). Are all fourteen earning their place? |
-| M2.3.5 | Market-cap floors — keep (they are load-bearing for the size rule) but measure their cost |
+| # | Task | status |
+|---|---|---|
+| M2.3.1 | Gate-by-gate marginal value — for each gate, measure the return contribution of the names it excludes | **done** — `bt.gate_lab_us14`, then corrected by the permutation null |
+| M2.3.2 | `fwd` threshold sweep — 25 → 15 → 10 → 5 → 0, measuring pool width and ranking edge at each | **done** — `fwd > 0` adopted, runs #85–#87 |
+| M2.3.3 | Revisit the EMA gate — it removes 43 of 423 candidates in NORMAL years; is it paying? | **done — keep it.** Proposed run #88 cancelled |
+| M2.3.4 | Revisit the 14 industry exclusions — the largest single cut in the funnel (55,490 from 99,754). Are all fourteen earning their place? | **done — keep.** +6.49 over a random cut, 2.7σ |
+| M2.3.5 | Market-cap floors — keep (they are load-bearing for the size rule) but measure their cost | **done — keep.** Cost is not measurably different from zero |
+
+**M2.3 is closed, and its net effect on the strategy is nothing.** Run #87 keeps every gate it has.
+See [`EXPERIMENT-2026-08-11-M2.3-gate-by-gate.md`](EXPERIMENT-2026-08-11-M2.3-gate-by-gate.md).
+
+Two results worth carrying forward:
+
+- **A standing rule.** "Dropping gate X gains N points" is not evidence about gate X. The book takes
+  the top 7 from a *ranked* pool, so any selective filter costs CAGR mechanically, whatever it
+  filters on. Every gate claim must be measured against a **random filter of identical
+  selectivity** (shuffle the flag within year, preserve the per-year pass count, re-run the
+  selection). Both apparent wins in the first pass — EMA +1.62 and the market-cap floor +5.01 —
+  vanished under this null. Applies to any future gate proposal.
+- **The screen is better than we could previously prove.** Five gates clear 2.6σ against that null.
+  The **discount gate is the most valuable rule in the strategy** at +24.49 over a random cut of the
+  same size (6.5σ) — not `g1 > 25`, as the raw table said — and the EPS chain is third at +10.33
+  (3.6σ), not the minor rule it first appeared to be.
+
+**Remaining housekeeping from M2.3:** remove the Energy sector exclusion from the config and
+catalogue. It filters exactly zero rows because the 14 industry exclusions already contain Oil &
+Gas and Other Energy Sources — no null applies and no behaviour changes; it is removed only so a
+rule that does nothing stops looking like a rule that does something.
 
 ### M2.4 — The learning-to-rank model
 

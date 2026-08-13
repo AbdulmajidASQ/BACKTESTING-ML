@@ -212,3 +212,160 @@ It survives, but with lower confidence and a different rationale.
 Still worth registering as run #88, but as a modest, uncertain improvement rather than a
 structural fix — and the honest headline is **+1.62 with high year-to-year variance**, not
 "removes the losing year".
+
+> **Superseded.** The permutation test below was run before registering anything. It says do not
+> register run #88 at all. See "The permutation test, and what it does to this whole table".
+
+---
+
+# The permutation test, and what it does to this whole table
+
+**Date:** 2026-08-13 · `bt.gate_perm_long`, `bt.gate_perm_res` · 300 permutations × 9 gates
+
+The permutation test was run on the EMA gate before registering run #88. It did not just weaken
+that result — it invalidated the way **every row of the table above** was measured.
+
+## The measurement error
+
+Every number in the original table is *"CAGR without gate X"* minus *"CAGR with all gates"*. That
+difference silently contains two things:
+
+1. whether gate X removes the *wrong* names, and
+2. the fact that **gate X removes names at all**.
+
+The second term is not zero, and it is not small. The book takes the top 7 from a ranked pool. Any
+filter that shrinks that pool deletes some of the names the ranking would have chosen, and the
+replacements are by definition ranked lower. **Shrinking a ranked pool costs CAGR mechanically,
+whatever the filter is filtering on.**
+
+So "dropping gate X gains N points" was never evidence that gate X is bad. It is what you would see
+from a gate that does nothing at all, provided it is selective.
+
+## The correct null
+
+For each gate, shuffle its pass/fail flag among that year's candidates, preserving the number of
+passes per year, then re-run the whole selection. Repeat 300 times. That gives the distribution of
+outcomes for **a filter of identical selectivity that carries no information**.
+
+The question then becomes the right one: *does the real gate beat a random cut of the same size?*
+
+## Result — all nine gates against a random filter of equal selectivity
+
+| gate | pool with → without | drop-gate CAGR | **observed "gain" from dropping** | **gain from dropping a RANDOM filter of the same size** | **excess over random** | σ | p (gate is harmful) |
+|---|---|---|---|---|---|---|---|
+| discount 25/75 | 769 → 1,876 | 60.04 | −12.59 | **+11.90** | **+24.49** | **6.49** | 0.000 |
+| `g1 > 25` | 769 → 1,678 | 58.01 | −14.62 | +3.16 | **+17.78** | 4.53 | 0.000 |
+| EPS chain | 769 → 1,012 | 69.45 | −3.18 | +7.16 | **+10.33** | 3.56 | 0.000 |
+| leverage | 769 → 1,046 | 63.09 | −9.54 | −1.21 | **+8.33** | 2.70 | 0.000 |
+| 14 industry exclusions | 769 → 927 | 67.85 | −4.78 | +1.71 | **+6.49** | 2.68 | 0.000 |
+| P/F1 ≥ 2 | 769 → 776 | 72.83 | +0.20 | +1.03 | +0.83 | 0.77 | 0.173 |
+| **EMA** | 769 → 858 | 74.41 | **+1.78** | **+2.26** | **+0.48** | **0.24** | **0.447** |
+| dedup | 769 → 777 | 72.82 | +0.19 | +0.01 | −0.18 | −0.42 | 0.753 |
+| **market-cap floor** | 769 → 909 | 77.06 | **+4.43** | **+2.24** | **−2.19** | **−0.71** | **0.763** |
+
+Baseline with all gates: **72.63**. *(This rig is ~8 rows tighter than the original table's — I apply
+the filing-date guard `g_knowable` — so levels differ by under a point. Both arms and all
+permutations share one base, so every comparison here is internally consistent.)*
+
+## 1. The EMA finding is dead — do not register run #88
+
+**Dropping the EMA gate gains +1.78. Dropping a random filter that cuts the same number of names
+gains +2.26.** The real gate sits at the **55th percentile** of the random distribution: 45% of
+meaningless filters of the same selectivity do *better* than it, 55% do worse. That is the middle.
+
+On the last 20 rebalance years — the window the owner's standing guidance says to weight — it is
+worse still: observed gain +1.78 against a random-filter gain of **+3.57**, with the real gate at
+the **70th percentile** of the null. The EMA gate looks *better* than a coin-flip filter there.
+
+There is no CAGR case for dropping it. **Run #88 is cancelled.** The entire +1.62/+1.78 was the
+price of pool shrinkage, and the EMA gate happens to be a marginally better-than-random way to pay
+it.
+
+### The worst-year claim also mostly dissolves
+
+I made a lot of "thirty positive years out of thirty". Under the null, **72% of random filters of
+the same selectivity also produce thirty positive years**. Having no losing year is the *normal*
+outcome at this pool size, not an achievement.
+
+What survives is thin and one-sided: the real EMA gate is in the 28% of filters that do retain a
+losing year, and only **8.7%** of random filters produce a worst year as bad as its −6.5%. So there
+is a marginal indication (p ≈ 0.09, single-tailed, driven entirely by 2008) that this specific gate
+hurts the worst year more than an arbitrary cut would.
+
+That is a **drawdown** claim, not a return claim, resting on one observation. It belongs in the
+deferred drawdown workstream, where it should be re-tested on the drawdown series rather than on
+worst calendar year. Recorded, not acted on.
+
+## 2. The market-cap floor was never a +5 opportunity either
+
+Rejecting it on survivorship grounds was right, and the statistics now say the same thing
+independently. The floor's apparent +4.43 gain becomes **−2.19 against a random filter** — the
+floor is at the 24th percentile of the null, weakest of the nine, but at −0.71σ that is
+comfortably inside noise.
+
+**Correct reading: the market-cap floor is statistically indistinguishable from a filter that does
+nothing, in either direction.** It costs no measurable return. Combined with the fact that it keeps
+the book out of the $18m–$50m band where the missing delistings concentrate, and out of names that
+cannot absorb capital, it is close to free protection. The owner's instinct was right twice over.
+
+## 3. The load-bearing gates are far more load-bearing than the table said
+
+This is the upside of the correction, and it is large. Against a random cut of equal size:
+
+| gate | old headline | **true value vs a random filter** |
+|---|---|---|
+| **discount gate** | −14.34 | **+24.49 (6.5σ)** |
+| `g1 > 25` | −16.04 | +17.78 (4.5σ) |
+| EPS chain | −3.95 | +10.33 (3.6σ) |
+| leverage | −10.31 | +8.33 (2.7σ) |
+| industry exclusions | −5.72 | +6.49 (2.7σ) |
+
+**The ranking changes at the top.** The original table named `g1 > 25` "the most valuable single
+gate in the strategy". It is not. **The discount gate is**, by a wide margin — 24.5 points better
+than a random cut against `g1`'s 17.8, and at 6.5σ the most statistically secure result anywhere in
+this programme. The old table under-ranked it because it is the most selective gate (769 from
+1,876), so it paid the largest mechanical shrinkage penalty, which was being charged against it.
+
+The EPS chain is the other revision: headline −3.95, described as merely useful, actually **+10.33
+at 3.6σ** — the third most informative gate we have. It is small in raw effect only because it is
+not very selective.
+
+**All five clear 2.6σ.** Whoever designed this screen chose five genuinely informative filters and
+two harmless ones. That is a much stronger endorsement of the original design than the first pass
+gave it.
+
+## 4. The methodological rule this establishes
+
+**Never report "dropping gate X gains N points" without the equal-selectivity null.** Pool size and
+gate quality are confounded in the raw difference, and the confound runs in a fixed direction: it
+flatters every proposal to remove a gate and penalises every selective gate.
+
+This is the third appearance of one underlying idea in this programme:
+
+- `oi_tau` failed because **the gates had already spent the signal** — no variation left to rank on.
+- The discount/growth double-count failed because **two ranking terms carried one signal**.
+- The gate table failed because **a measured difference contained a second effect nobody subtracted.**
+
+All three are the same discipline: before believing a difference, ask what else changed.
+
+## What actually changes
+
+| | before | after |
+|---|---|---|
+| Run #88 (drop EMA) | recommended | **cancelled — no CAGR case** |
+| Market-cap floor | keep, on survivorship grounds | keep, on survivorship grounds **and** because it costs nothing measurable |
+| Most valuable gate | `g1 > 25` | **the discount gate, 6.5σ** |
+| EPS chain | minor | third most informative gate, 3.6σ |
+| Energy sector exclusion | dead code, remove | unchanged — it filters zero rows, so no null applies |
+| EMA and worst-year | "removes the only losing year" | withdrawn; 72% of random filters do the same |
+
+Net effect on the strategy: **nothing changes.** Run #87 keeps every gate it has. The value of this
+experiment is entirely negative — it stopped a run being registered on a measurement artefact, and
+it tells us the screen we already own is better than we could previously prove.
+
+## Reproducing
+
+`bt.gate_perm_long` — one row per (gate under test, candidate passing all *other* gates), with the
+gate's own flag retained. `bt.gate_perm_res` — 2,700 rows, one per (permutation, gate), holding that
+permutation's CAGR and worst year. Baseline 72.63, 30 closed years, widened pool, `disc+fwd+gpa`,
+apex `total_return_pct`.
