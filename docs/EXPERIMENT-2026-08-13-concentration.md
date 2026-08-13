@@ -162,13 +162,6 @@ appearing again in a new place, and it carries two lessons:
 Honest expectation: **+1 to +2.8 CAGR points**, at the lower end if the next twenty years look more
 like 1996–2005 than like 2006–2025.
 
-### What would make me withdraw this
-
-- If the daily rebuild shows max drawdown materially worse than #87's −56.69%. Annual σ says it
-  should not, but annual σ is not drawdown and this must be measured, not assumed.
-- If the data agent's size-conditional survivorship work shows the effect concentrates in the
-  ranks near the cut.
-
 ### Caveats
 
 - Selected from a sweep. The 30-year evidence is inconclusive on its own (76.7% bootstrap); the
@@ -176,3 +169,84 @@ like 1996–2005 than like 2006–2025.
 - Wins are frequent and small, losses rare and large. A −20-point year from this change is inside
   the historical range.
 - All levels inherit the survivor-only universe. Only differences are meaningful.
+
+---
+
+# Registered as run #88
+
+Built 2026-08-13, fully populated, all audit gates passing.
+
+**`United States (US) · Conc-6 · 3-Factor Score, growth-orthogonalised discount`**
+
+| | #14 | #85 | #86 | #87 | **#88** |
+|---|---|---|---|---|---|
+| ranking | `disc` | `disc+fwd+gpa`, size screen | `disc+fwd+gpa` | `disc_resid+fwd+gpa` | **same as #87** |
+| NORMAL book | 7 | 7 | 7 | 7 | **6** |
+| CAGR, 30 closed years | 69.22 | 72.57 | 73.77 | 74.19 | **75.24** |
+| CAGR, last 20 years | — | — | — | 73.46 | **76.23** |
+| Hit rate | 81.2% | 85.4% | 85.4% | 86.5% | **87.3%** |
+| Worst year | −7.61 | −7.15 | −7.15 | −7.15 | **−6.23** |
+| Annualised volatility | 33.11\* | 32.09 | 32.36 | **31.86** | 32.59 |
+| Max drawdown | −52.74\* | −56.69 | −56.69 | −56.69 | −56.69 |
+| Calmar | 1.31\* | 1.28 | 1.30 | 1.31 | **1.33** |
+| Live 2026 to date | **102.66** | 72.55 | 72.00 | 79.53 | **82.13** |
+| NAV reconciliation | — | 30/30 | 30/30 | 30/30, 0.022% | **30/30, 0.0066pp** |
+| Weight exceptions | 0 | 0 | 0 | 0 | **0** |
+
+\* #14 is measured on a ~364-row spine with weekend interpolation; #85–#88 share one trading-day
+spine and are directly comparable to each other.
+
+Registration: `runs` with reproducible config · 31 `run_years` · 172 `picks` · 172 `btd_books` ·
+42,425 `btd_rel` · 7,630 `btd_daily` · catalogue with 11 caveats (draft, not subscribable) ·
+4 events. NAV reconciliation 30/30 at worst 0.0066pp — tighter than #87. Weight audit clean across
+7,660 date slices, weights summing to exactly 1.000000 in every one.
+
+## The drawdown result, measured rather than assumed
+
+I set a withdrawal condition before building: *"if the daily rebuild shows max drawdown materially
+worse than #87's −56.69%."* It does not. **Max drawdown is −56.69%, unchanged to two decimals.**
+
+**That is not the win it looks like, and it should not be reported as one.**
+
+The deepest episode is peak **2020-02-20** to trough **2020-03-18** — inside rebalance year **2019**,
+which is a **RECOVERY** year holding five names. #88 does not change RECOVERY. Both books held the
+same five names through COVID, so the figure is identical *by construction*, not by merit.
+
+The honest measurement is drawdown within NORMAL years, which are the only years #88 alters:
+
+| rebalance year | regime | #87 | **#88** | change |
+|---|---|---|---|---|
+| 2019 | RECOVERY | −56.69 | −56.69 | **0.00 — untouched** |
+| 2020 | RECOVERY | −49.35 | −49.35 | **0.00 — untouched** |
+| **2008** | NORMAL | −39.16 | **−34.30** | **+4.87** |
+| 2018 | NORMAL | −38.05 | −39.25 | −1.19 |
+| 2025 | NORMAL | −34.43 | −36.23 | −1.80 |
+| **2015** | NORMAL | −33.39 | **−36.84** | **−3.45** |
+| 2022 | NORMAL | −32.06 | −30.64 | +1.42 |
+| 2024 | NORMAL | −31.98 | −34.32 | −2.34 |
+| 2021 | NORMAL | −31.02 | −32.39 | −1.37 |
+| 1998 | NORMAL | −25.74 | −27.12 | −1.38 |
+| 2006 | NORMAL | −21.03 | −22.81 | −1.78 |
+
+Worse in seven of the nine NORMAL years, better in two, **mean about 0.8 points deeper**.
+
+**So the trade is: +1.05 CAGR over 30 years and +2.77 over the last 20, for roughly 0.8 points of
+deeper within-year drawdown in normal years, and no change to the historical maximum.** Volatility
+rises 31.86 → 32.59. The Calmar improvement to 1.33 is real arithmetic but its denominator sits in
+a regime this change never touches, so it overstates the case.
+
+Under the owner's standing mandate — fully invested, maximise CAGR now, address drawdown in a
+later session — that is an acceptable trade, and it is a smaller drawdown cost than the step from
+#14 to #85 already accepted (−52.77 → −56.69, nearly four points).
+
+## Note for whoever picks up the drawdown workstream
+
+Two findings from this session belong to you, not here:
+
+1. The EMA gate shows a marginal one-sided indication (p ≈ 0.09) that it deepens the worst calendar
+   year relative to a random filter of equal selectivity, driven entirely by 2008. It has no CAGR
+   case at all. Re-test it on the drawdown series rather than on worst calendar year.
+2. The deepest drawdown in every run of this family occurs in a **RECOVERY** year holding five
+   names. The RECOVERY rule — both the five-name count and the regime list itself — has never been
+   validated, and it is where the drawdown actually lives. That is the highest-value target for
+   drawdown work, ahead of anything in the NORMAL book.
