@@ -152,3 +152,63 @@ basis, so the differences hold.
 
 All results inherit the survivor-only universe. The EMA finding is largely insulated because it is
 not size-conditioned; the market-cap finding is the opposite and is rejected on those grounds.
+
+---
+
+## Correction: the EMA mechanism is not a crash story
+
+Prompted by the owner asking whether the RECOVERY waiver already covers 2008. Two things came out
+of checking, one confirming and one correcting.
+
+### 2008 is a NORMAL year — the waiver does not cover it
+
+The manual regime list marks **calendar 2008 → rebalance 2009** as RECOVERY. Rebalance year 2008,
+which runs April 2008 to April 2009 and is the year that lost 7.6%, is **NORMAL**. The EMA gate
+applied in full straight through the crash, cutting that year's pool from **24 candidates to 11**.
+
+So the current design **applies the trend filter during the descent and waives it during the
+recovery**. If the belief behind the RECOVERY waiver is right — that broadly depressed prices make
+a 200-week-EMA test reject the whole opportunity set — then the waiver is switched on one year too
+late.
+
+### But 2008 is not where most of the gain comes from
+
+My earlier framing — "the mechanism is visible in 2008" — was true for that year and **overstated
+as the general explanation**. Year-by-year attribution, all NORMAL years (RECOVERY years show zero
+difference by construction, since the gate is already off):
+
+| year | with EMA | without | diff |
+|---|---|---|---|
+| **2005** | 105.0 | 135.6 | **+30.6** |
+| 2025 | 106.7 | 124.8 | +18.1 |
+| 2008 | −6.5 | +6.6 | +13.1 |
+| 2018 | 78.8 | 91.2 | +12.4 |
+| 2024 | 120.3 | 131.1 | +10.8 |
+| 2007 | 51.1 | 54.2 | +3.1 |
+| 2017 | 47.9 | 47.3 | −0.6 |
+| 2006 | 36.8 | 34.7 | −2.2 |
+| 2022 | 49.4 | 46.8 | −2.7 |
+| 2010 | 88.9 | 82.6 | −6.2 |
+| 2004 | 78.7 | 71.9 | −6.7 |
+| **2015** | 24.7 | 12.6 | **−12.1** |
+
+The largest single gain is **2005 at +30.6**, an ordinary year in a rising market. Six years gain,
+six lose, and the losses are real — 2015 costs 12.1 points.
+
+**Revised characterisation: a broad, noisy effect with a positive mean, not a crash hedge.** Gains
+total roughly +88 and losses roughly −31 across the years where anything changes.
+
+### What this does to the recommendation
+
+It survives, but with lower confidence and a different rationale.
+
+- The **worst-year improvement is entirely 2008** (−6.5 → +6.6), and that single year is the whole
+  of the "thirty positive years out of thirty" claim. It rests on one observation.
+- The **CAGR gain is diffuse** and roughly two-to-one in favour across NORMAL years, which is a
+  weaker basis than a mechanism.
+- A permutation test is now more important than it looked, since a six-up / six-down split with a
+  positive mean is exactly what noise produces some of the time.
+
+Still worth registering as run #88, but as a modest, uncertain improvement rather than a
+structural fix — and the honest headline is **+1.62 with high year-to-year variance**, not
+"removes the losing year".
