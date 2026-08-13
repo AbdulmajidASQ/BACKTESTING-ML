@@ -1,6 +1,6 @@
-# Run #87 vs the flagship — what changed, and how to run it live
+# Run #88 vs the flagship — what changed, and how to run it live
 
-**Date:** 2026-08-11 · Corrects the risk comparison in earlier documents
+**Date:** 2026-08-13 (originally 2026-08-11) · Corrects the risk comparison in earlier documents · Updated for run #88
 
 ---
 
@@ -13,28 +13,37 @@ pool* (−60.66%), not against run #14's actual registered book.
 All four books rebuilt on an **identical trading-day spine**, 1996–2025, equal weight, same price
 source, same forward-fill method:
 
-| | #14 (today) | #85 | #86 | **#87** |
-|---|---|---|---|---|
-| CAGR | 69.35 | 72.57 | 73.77 | **74.19** |
-| Annualised volatility | 33.05 | 32.15 | 32.41 | **31.92** |
-| **Max drawdown** | **−52.77** | −56.69 | −56.69 | −56.69 |
-| Sharpe (rf = 0) | 2.10 | 2.26 | 2.28 | **2.32** |
-| **Calmar (CAGR ÷ drawdown)** | **1.31** | 1.28 | 1.30 | **1.31** |
+| | #14 (today) | #85 | #86 | #87 | **#88 (current)** |
+|---|---|---|---|---|---|
+| CAGR | 69.35 | 72.57 | 73.77 | 74.19 | **75.24** |
+| Annualised volatility | 33.05 | 32.09 | 32.36 | **31.86** | 32.59 |
+| **Max drawdown** | **−52.77** | −56.69 | −56.69 | −56.69 | −56.69 |
+| Sharpe (rf = 0) | 2.10 | 2.26 | 2.28 | **2.32** | 2.31 |
+| **Calmar (CAGR ÷ drawdown)** | 1.31 | 1.28 | 1.30 | 1.31 | **1.33** |
 
 ### What this actually says
 
-**#14 has the best drawdown.** All three new runs are ~4 points worse at −56.69% against −52.77%.
+**#14 has the best drawdown.** All four new runs are ~4 points worse at −56.69% against −52.77%.
 
-The honest trade is: **+4.84 points of return for 3.92 points of drawdown.**
+The honest trade against today's flagship is: **+5.89 points of return for 3.92 points of
+drawdown** (#14 → #88).
 
-- **Volatility improves** — 33.05 → 31.92, so the day-to-day ride is slightly smoother.
-- **Sharpe improves** — 2.10 → 2.32, return per unit of volatility is genuinely better.
-- **Calmar is identical** — 1.31 → 1.31. Return per unit of *drawdown* is unchanged.
+One caveat on the identical −56.69 across #85–#88: the deepest episode falls in rebalance year
+2019, a **RECOVERY** year holding five names, which none of these runs changes. It is the same five
+names in all four books, so the figure is identical by construction rather than by merit. Within
+NORMAL years #88 is about 0.8 points deeper than #87.
 
-That last line is the one to hold on to. **You are not getting drawdown reduction. You are getting
-more return at proportionally more drawdown, with a slightly smoother path.** For a fully-invested
-concentrated book with no hedging, that is the expected shape — and it is consistent with the
-programme's finding that under this mandate, return and drawdown trade off against each other.
+Against #14:
+
+- **Volatility improves** — 33.05 → 32.59, so the day-to-day ride is slightly smoother.
+- **Sharpe improves** — 2.10 → 2.31, return per unit of volatility is genuinely better.
+- **Calmar improves slightly** — 1.31 → 1.33, but read the caveat above before leaning on it.
+
+The line to hold on to is unchanged from the earlier version of this document. **You are not
+getting drawdown reduction. You are getting more return at roughly proportional drawdown, with a
+slightly smoother path.** For a fully-invested concentrated book with no hedging, that is the
+expected shape — and it is consistent with the programme's finding that under this mandate, return
+and drawdown trade off against each other.
 
 ---
 
@@ -46,7 +55,9 @@ Screen the universe. Of the survivors, **sort by discount to fair value. Buy the
 
 One question: *how cheap is it?*
 
-### Run #87 — what changes
+### Run #88 — what changes
+
+Three changes from #14, in order of how much they matter.
 
 **Change 1 — a wider net.** The forward-growth gate loosens from "must exceed 25%" to "must be
 positive". Roughly doubles the candidate list, from ~13 names to ~28.
@@ -65,6 +76,18 @@ than positions, so there was no real choice to make.
 
 Under #14 the ranking effectively asks question 1 and question 2 *mixed together*, and never asks
 question 3.
+
+**Change 3 — buy six, not seven.** In a normal year the book holds the top six instead of the top
+seven. Recovery years still hold five.
+
+The reason is simply that the ranking works. Across thirty years, positions one to seven returned
+82% on average and positions eight to sixteen returned 45% — so the cut at seven was well placed —
+but **position seven was the weakest of the seven**, at 69%. In the nineteen years where a seventh
+name actually existed, it returned 48.2% against the top six's 62.7%.
+
+Worth knowing: in eleven of thirty years this changes nothing at all, because the screen produced
+fewer than seven candidates and the limit never bound. In the live 2026 year the whole change is
+dropping one name, SMTC.
 
 ### Why "beyond what growth explains" matters
 
@@ -123,7 +146,7 @@ In words: draw the average line through this year's candidates relating discount
 measure **how far above or below that line each company sits**. Above the line = genuinely cheaper
 than its growth forecast alone would justify.
 
-### Step 4 — Standardise the three, add, and take the top 7
+### Step 4 — Standardise the three, add, and take the top 6
 
 For each of the three measures — column E (net cheapness), C (growth), D (gross profit/assets):
 
@@ -135,8 +158,15 @@ H2 = (D2 - AVERAGE(D:D)) / STDEV(D:D)
 I2 = F2 + G2 + H2                       ← total score
 ```
 
-Sort by column I. **Take the top 7** (top 5 in a recovery year), equal weight, hold to the next
+Sort by column I. **Take the top 6** (top 5 in a recovery year), equal weight, hold to the next
 1 April. Missing value → that z-score is 0.
+
+> **Changed 2026-08-13.** This said "top 7" until run #88 tested the book size for the first time.
+> Six is now the number for a normal year; **the recovery count stays at 5**. See
+> [`EXPERIMENT-2026-08-13-concentration.md`](EXPERIMENT-2026-08-13-concentration.md). Two things
+> matter operationally: the 7th name has historically been the weakest of the seven, and **the book
+> size must never be re-tuned year to year** — re-optimising it annually from prior history loses
+> 3.3 CAGR points against simply leaving it alone. Six is now fixed.
 
 ### Full spreadsheet layout
 
@@ -148,29 +178,34 @@ Four formulas, one sort. That is the whole method.
 
 ---
 
-## 4. The April 2026 book, all three rules
+## 4. The April 2026 book, all four rules
 
-| rank | #87 (new) | #86 | #14 (today) |
-|---|---|---|---|
-| 1 | NVDA | NVDA | SNDK |
-| 2 | MU | SNDK | MU |
-| 3 | STX | STX | STX |
-| 4 | WDC | VICR | WDC |
-| 5 | CRDO | WDC | CRDO |
-| 6 | VICR | SMTC | AMD |
-| 7 | SMTC | CRDO | MRVL |
-| **live return to date** | **79.53%** | 72.00% | **102.66%** |
+| rank | **#88 (current)** | #87 | #86 | #14 (today) |
+|---|---|---|---|---|
+| 1 | NVDA | NVDA | NVDA | SNDK |
+| 2 | MU | MU | SNDK | MU |
+| 3 | STX | STX | STX | STX |
+| 4 | WDC | WDC | VICR | WDC |
+| 5 | CRDO | CRDO | WDC | CRDO |
+| 6 | VICR | VICR | SMTC | AMD |
+| 7 | — *(SMTC dropped)* | SMTC | CRDO | MRVL |
+| **live return to date** | **82.13%** | 79.53% | 72.00% | **102.66%** |
 
 #87 recovers MU (which #86 ranked 8th) because MU's cheapness-net-of-growth is the highest in the
 list at +50.2. It still misses AMD and MRVL, which are the reason #14 leads the live year.
+
+**#88 is #87 without SMTC**, the 7th name, which is running behind the rest of the book — hence
+82.13% against 79.53%. The whole change, in the live year, is one name.
 
 ---
 
 ## 5. What to expect
 
-- **+2 to +3 CAGR points** over the long run. The +4.84 full-history figure leans on 1996–2000.
-- **Drawdown ~4 points worse.** Return per unit of drawdown is unchanged.
-- **Slightly smoother day-to-day** — volatility down about 1.1 points, Sharpe up 0.22.
+- **+3 to +4 CAGR points** over the long run against #14. The +5.89 full-history figure leans on
+  1996–2000.
+- **Drawdown ~4 points worse** than #14. Return per unit of drawdown is modestly better (Calmar
+  1.31 → 1.33), with the caveat above about where that drawdown lives.
+- **Slightly smoother day-to-day than #14** — volatility 33.05 → 32.59, Sharpe up 0.21.
 - **Multi-year stretches behind #14.** It is behind now. Judge over five years, never one.
 - Every historical figure is measured on a universe missing about 90% of delisted companies, so all
   four runs are flattered by an amount not yet quantified. The *differences* between them are the
